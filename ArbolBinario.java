@@ -22,17 +22,21 @@ public class ArbolBinario {
                     valor=entrada.nextInt();
                     eliminar(raiz, valor);
                 break;
-                case 3:System.out.println("Total: "+totalNodos(raiz)+" nodos");
+                case 3:
+
+                break;
+                
+                case 4:System.out.println("Total: "+totalNodos(raiz)+" nodos");
                     System.out.println("Total nodos hoja: "+totalHojas(raiz)+" nodo (s)");
                     break;
-                case 4: System.out.println("Recorrido pre-orden\n");
+                case 5: System.out.println("Recorrido pre-orden\n");
                 Recorridos.preOrden(raiz);
                 System.out.println("Recorrido post-orden\n");
                 Recorridos.postOrden(raiz);
                 System.out.println("Recorrido inOrden\n");
                 Recorridos.inOrden(raiz);
                 break;
-                case 5:
+                case 6:
                     System.out.println("Ingrese el valor a buscar: ");
                     int valorBuscar = entrada.nextInt();
                     buscarNodo(raiz, valorBuscar);
@@ -194,10 +198,35 @@ public class ArbolBinario {
                     buscarNodo(raiz.getDer(), valorBuscar);
                 }
             } else {
+                op=1;
                 System.out.println("Valor encontrado: " + raiz.getId());
             }
         }
         return op;
 
+    }
+    private static Nodo vender(Nodo raiz) {
+        int id, cantidad;
+        System.out.println("Ingrese el id del producto a vender: ");
+        id = entrada.nextInt();
+        System.out.println("Cantidad a vender: ");
+        cantidad = entrada.nextInt();
+        Nodo nodo= new Nodo(id, "", cantidad, 0.0);
+        int validar = buscarNodo(raiz, nodo.getId());
+        if(validar != 0){
+            if((nodo.getCantidad() <= raiz.getCantidad()) && (nodo.getCantidad() > 0)){
+                raiz.setCantidad(raiz.getCantidad() - nodo.getCantidad());
+                if(raiz.getCantidad() == 0){
+                    System.out.println("El producto sera eliminado ya que no tiene existencias");
+                    raiz = eliminar(raiz, raiz.getId());
+                }else{
+                    System.out.println("Existencias actualizadas");
+                }
+            }else{
+                System.out.println("Productos insuficientes");
+            }
+            System.out.println("Accion exitosa");
+        }     
+        return raiz; 
     }
 }

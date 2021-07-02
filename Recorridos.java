@@ -1,22 +1,24 @@
 public class Recorridos {
-    public static void preOrden(Nodo raiz) {
-        if (raiz!=null) {
-            System.out.println(raiz.getId());
+    public void preOrden(Nodo<Producto> raiz) {
+        if (raiz != null) {
+            System.out.println(raiz.getInfo().toString());
             preOrden(raiz.getIzq());
-            preOrden(raiz.getDer());            
-        }        
-    }
-    public static void postOrden(Nodo raiz) {
-        if (raiz!=null) {
-            postOrden(raiz.getIzq());
-            postOrden(raiz.getDer());
-            System.out.println(raiz.getId());
+            preOrden(raiz.getDer());
         }
     }
-    public static void inOrden(Nodo raiz){
-        if(raiz != null){
+
+    public void postOrden(Nodo<Producto> raiz) {
+        if (raiz != null) {
+            postOrden(raiz.getIzq());
+            postOrden(raiz.getDer());
+            System.out.println(raiz.getInfo().toString());
+        }
+    }
+
+    public void inOrden(Nodo<Producto> raiz) {
+        if (raiz != null) {
             inOrden(raiz.getIzq());
-            System.out.print(raiz.getId()+"-");
+            System.out.println(raiz.getInfo().toString());
             inOrden(raiz.getDer());
         }
     }

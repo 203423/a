@@ -5,9 +5,10 @@ public class Main {
     public static Scanner entrada = new Scanner(System.in);
 
     public static void main(String[] args) {
-        int opc, valor;
-        Nodo raiz = new Nodo();
+        Recorridos recorrido = new Recorridos();
+        Nodo<Producto> raiz = new Nodo<Producto>();
         raiz = crearArbol(raiz);
+        int opc, valor;
         do {
             System.out.println("1. Vender\n2. Agregar Producto\n3. Eliminar\n4. Mostrar Productos\n5. Guardar y Salir");
             opc = entrada.nextInt();
@@ -22,22 +23,24 @@ public class Main {
                 case 3:
                     System.out.println("introduzca el id del producto a eliminar");
                     valor = entrada.nextInt();
-                    eliminar(raiz, valor);
+                    Producto eliminado = new Producto(valor, 1, "", 0.0);
+                    raiz = eliminar(raiz, eliminado);
                     break;
 
                 case 4:
                     System.out.println("Recorrido inOrden\n");
-                    Recorridos.inOrden(raiz);
+                    recorrido.inOrden(raiz);
                     break;
                 case 5:
                     escribir(raiz);
                     break;
             }
-        } while (opc < 6);
+        } while (opc != 5);
     }
 
-    public static Nodo crearArbol(Nodo nodoPadre) {
-        int id, cantidad;
+    public static Nodo<Producto> crearArbol(Nodo<Producto> nodoPadre) {
+        int id;
+        int cantidad;
         Double precio;
         String nombre;
         try {
@@ -51,60 +54,105 @@ public class Main {
                 nombre = partes[1];
                 cantidad = Integer.parseInt(partes[2]);
                 precio = Double.parseDouble(partes[3]);
+                Producto producto = new Producto(id, cantidad, nombre, precio);
                 if (contador == 0) {
-                    nodoPadre.actualizar(id, nombre, cantidad, precio);
+                    nodoPadre.setInfo(producto);
                 } else {
-                    insertarNodo(nodoPadre, id, nombre, cantidad, precio);
+                    insertarNodo(nodoPadre, producto);
                 }
                 contador++;
             }
             contenedor.close();
         } catch (FileNotFoundException e) {
-            System.out.println("No se encontro el archivo");
+            System.out.println("El archivo no fue encontrado");
         } catch (IOException e) {
             System.out.println("Error");
         }
         return nodoPadre;
     }
 
-    private static void agregarProducto(Nodo raiz) {
+    private static Nodo<Producto> vender(Nodo<Producto> raiz) {
         int id, cantidad;
-        String nombre;
-        Double precio;
-        System.out.println("Ingrese el id: ");
+        System.out.println("Ingrese el id del producto a vender: ");
         id = entrada.nextInt();
-        System.out.println("Ingrese el nombre: ");
-        entrada.nextLine();
-        nombre = entrada.nextLine();
-        System.out.println("Ingrese el precio: ");
-        precio = entrada.nextDouble();
-        System.out.println("Ingrese la cantidad: ");
+        System.out.println("Cantidad a vender: ");
         cantidad = entrada.nextInt();
-        int validar = buscarNodo(raiz, id);
-        if (validar == 0) {
-            insertarNodo(raiz, id, nombre, cantidad, precio);
-            System.out.println("El producto ha sido añadido");
+        Producto producto = new Producto(id, cantidad, "", 0.0);
+        Nodo<Producto> validar = buscarNodo(raiz, producto, 2);
+        if (validar != null) {
+            if ((producto.getCantidad() <= validar.getInfo().getCantidad()) && (producto.getCantidad() > 0)) {
+                validar.getInfo().setCantidad(validar.getInfo().getCantidad() - producto.getCantidad());
+                if (validar.getInfo().getCantidad() == 0) {
+                    System.out.println("Producto eliminado por falta de existencias");
+                    raiz = eliminar(raiz, validar.getInfo());
+                } else {
+                    System.out.println("Cantidad de existencia actualizada");
+                }
+            } else {
+                System.out.println("La cantidad del producto es insuficiente");
+            }
+            System.out.println("Accion exitosa");
         }
+        return raiz;
     }
 
-    private static Nodo eliminar(Nodo raiz, int id) {
+    private static void agregarProducto(Nodo<Producto> raiz) {
+        int id, cantidad;
+        boolean validador = false;
+        String nombre;
+        Double precio;
+        do {
+            System.out.println("Ingrese el id: ");
+            id = entrada.nextInt();
+            validar(id);
+            if (validador == true) {
+                System.out.println("Ingrese el nombre: ");
+                entrada.nextLine();
+                nombre = entrada.nextLine();
+                System.out.println("Ingrese el precio: ");
+                precio = entrada.nextDouble();
+                System.out.println("Ingrese la cantidad: ");
+                cantidad = entrada.nextInt();
+                Producto producto = new Producto(id, cantidad, nombre, precio);
+                Nodo<Producto> validar = buscarNodo(raiz, producto, 1);
+                if (validar == null) {
+                    insertarNodo(raiz, producto);
+                    System.out.println("El producto ha sido añadido");
+                }
+            }
+        } while (validador != true);
+
+    }
+
+    private static boolean validar(int id) {
+        boolean validador = false;
+        if (id < 999) {
+            System.out.println("El codigo debe ser de 4 digitos\n");
+            validador = false;
+        } else if (id > 999) {
+            validador = true;
+        }
+        return validador;
+    }
+
+    private static Nodo<Producto> eliminar(Nodo<Producto> raiz, Producto eliminado) {
         boolean bandera;
-        Nodo otroNodo = new Nodo();
-        Nodo aux = new Nodo();
-        Nodo aux1 = new Nodo();
+        Nodo<Producto> anotherNodo = new Nodo<Producto>();
+        Nodo<Producto> aux = new Nodo<Producto>();
+        Nodo<Producto> aux1 = new Nodo<Producto>();
         if (raiz != null) {
-            if (id < raiz.getId()) {
-                raiz.setIzq(eliminar(raiz.getIzq(), id));
+            if (eliminado.getId() < raiz.getInfo().getId()) {
+                raiz.setIzq(eliminar(raiz.getIzq(), eliminado));
             } else {
-                if (id > raiz.getId()) {
-                    raiz.setDer(eliminar(raiz.getDer(), id));
+                if (eliminado.getId() > raiz.getInfo().getId()) {
+                    raiz.setDer(eliminar(raiz.getDer(), eliminado));
                 } else {
-                    otroNodo = raiz;
-                    if (otroNodo.getDer() == null) {
-                        raiz = otroNodo.getIzq();
+                    anotherNodo = raiz;
+                    if (anotherNodo.getDer() == null) {
+                        raiz = anotherNodo.getIzq();
                     } else {
-                        if (otroNodo.getIzq() == null) {
-                            raiz = otroNodo.getDer();
+                        if (anotherNodo.getIzq() == null) {
+                            raiz = anotherNodo.getDer();
                         } else {
                             aux = raiz.getIzq();
                             bandera = false;
@@ -113,8 +161,8 @@ public class Main {
                                 aux = aux.getDer();
                                 bandera = true;
                             }
-                            raiz.setInfo(aux, raiz);
-                            otroNodo = aux;
+                            raiz.setInfo(aux.getInfo());
+                            anotherNodo = aux;
                             if (bandera == true) {
                                 aux1.setDer(aux.getIzq());
                             } else {
@@ -122,95 +170,81 @@ public class Main {
                             }
                         }
                     }
-                    otroNodo = null;
+                    anotherNodo = null;
+                    System.out.println("El producto ha sido eliminado");
                 }
             }
         } else {
-            System.out.println("La información no se ha encontrado");
+            System.out.println("El producto no fue encontrado");
         }
         return raiz;
     }
 
-    public static void insertarNodo(Nodo nodoPadre, int id, String nombre, int cantidad, Double precio) {
-        if (id < nodoPadre.getId()) {
+    public static void insertarNodo(Nodo<Producto> nodoPadre, Producto producto) {
+        if (producto.getId() < nodoPadre.getInfo().getId()) {
             if (nodoPadre.getIzq() == null) {
-                Nodo nuevoNodo = new Nodo(id, nombre, cantidad, precio);
+                Nodo<Producto> nuevoNodo = new Nodo<Producto>(producto);
                 nodoPadre.setIzq(nuevoNodo);
             } else {
-                insertarNodo(nodoPadre.getIzq(), id, nombre, cantidad, precio);
+                insertarNodo(nodoPadre.getIzq(), producto);
             }
         } else {
-            if (id > nodoPadre.getId()) {
+            if (producto.getId() > nodoPadre.getInfo().getId()) {
                 if (nodoPadre.getDer() == null) {
-                    Nodo nuevoNodo = new Nodo(id, nombre, cantidad, precio);
+                    Nodo<Producto> nuevoNodo = new Nodo<Producto>(producto);
                     nodoPadre.setDer(nuevoNodo);
                 } else {
-                    insertarNodo(nodoPadre.getDer(), id, nombre, cantidad, precio);
+                    insertarNodo(nodoPadre.getDer(), producto);
                 }
             }
         }
     }
 
-    private static int buscarNodo(Nodo raiz, int valorBuscar) {
-        int op = 0;
-        if (valorBuscar < raiz.getId()) {
+    private static Nodo<Producto> buscarNodo(Nodo<Producto> raiz, Producto producto, int opc) {
+        if (producto.getId() < raiz.getInfo().getId()) {
             if (raiz.getIzq() == null) {
-                op = 0;
+                System.out.println("Valor no encontrado");
+                return null;
             } else {
-                buscarNodo(raiz.getIzq(), valorBuscar);
+                buscarNodo(raiz.getIzq(), producto, opc);
             }
         } else {
-            if (valorBuscar > raiz.getId()) {
+            if (producto.getId() > raiz.getInfo().getId()) {
                 if (raiz.getDer() == null) {
                     System.out.println("Valor no encontrado");
-                    op = 0;
+                    return null;
                 } else {
-                    buscarNodo(raiz.getDer(), valorBuscar);
+                    buscarNodo(raiz.getDer(), producto, opc);
                 }
             } else {
-                op = 1;
-                System.out.println("Valor encontrado: " + raiz.getId());
-            }
-        }
-        return op;
-
-    }
-
-    private static Nodo vender(Nodo raiz) {
-        int id, cantidad;
-        System.out.println("Ingrese el id del producto a vender: ");
-        id = entrada.nextInt();
-        System.out.println("Cantidad a vender: ");
-        cantidad = entrada.nextInt();
-        Nodo nodo = new Nodo(id, "", cantidad, 0.0);
-        int validar = buscarNodo(raiz, nodo.getId());
-        if (validar != 0) {
-            if ((nodo.getCantidad() <= raiz.getCantidad()) && (nodo.getCantidad() > 0)) {
-                raiz.setCantidad(raiz.getCantidad() - nodo.getCantidad());
-                if (raiz.getCantidad() == 0) {
-                    System.out.println("Producto sin unidades, este producto será eliminado");
-                    raiz = eliminar(raiz, raiz.getId());
-                } else {
-                    System.out.println("Existencias actualizadas");
+                System.out.println("Valor encontrado: " + raiz.getInfo().toString());
+                if (opc == 1) {
+                    if ((producto.compareTo(raiz.getInfo()) == 0) && (producto.getCantidad() > 0)) {
+                        raiz.getInfo().setCantidad(raiz.getInfo().getCantidad() + producto.getCantidad());
+                        System.out.println("Unidades agregadas al producto");
+                    } else {
+                        System.out.println("El codigo ya existe");
+                    }
+                    return null;
                 }
-            } else {
-                System.out.println("El producto elegido tiene unidades insuficientes");
+                if (opc == 2) {
+                    return raiz;
+                }
             }
-            System.out.println("La venta se completo");
         }
-        return raiz;
+        return null;
     }
 
-    private static void escribirArchivo(Nodo raiz, BufferedWriter bw) throws IOException {
+    private static void escribirArchivo(Nodo<Producto> raiz, BufferedWriter bw) throws IOException {
         if (raiz != null) {
             escribirArchivo(raiz.getIzq(), bw);
-            bw.write(raiz.getInfo(raiz).getId() + "-" + raiz.getInfo(raiz).getNombre() + "-"
-                    + raiz.getInfo(raiz).getCantidad() + "-" + raiz.getInfo(raiz).getPrecio() + "\n");
+            bw.write(raiz.getInfo().getId() + "-" + raiz.getInfo().getNombre() + "-" + raiz.getInfo().getCantidad()
+                    + "-" + raiz.getInfo().getPrecio() + "\n");
             escribirArchivo(raiz.getDer(), bw);
         }
     }
 
-    public static void escribir(Nodo raiz) {
+    public static void escribir(Nodo<Producto> raiz) {
         BufferedWriter bw;
         try {
             File archivo = new File("Productos.txt");

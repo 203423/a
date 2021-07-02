@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class ArbolBinario {
+public class Main {
     public static Scanner entrada = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -9,20 +9,20 @@ public class ArbolBinario {
         Nodo raiz = new Nodo();
         raiz = crearArbol(raiz);
         do {
-            System.out
-                    .println("1. Agregar productos\n2. Eliminar\n3. Vender\n4. Mostrar Productos\n5. Guardar y Salir");
+            System.out.println("1. Vender\n2. Agregar Producto\n3. Eliminar\n4. Mostrar Productos\n5. Guardar y Salir");
             opc = entrada.nextInt();
             switch (opc) {
                 case 1:
-                    agregarProducto(raiz);
+                    raiz = vender(raiz);
+
                     break;
                 case 2:
+                    agregarProducto(raiz);
+                    break;
+                case 3:
                     System.out.println("introduzca el id del producto a eliminar");
                     valor = entrada.nextInt();
                     eliminar(raiz, valor);
-                    break;
-                case 3:
-                    raiz = vender(raiz);
                     break;
 
                 case 4:
@@ -31,7 +31,6 @@ public class ArbolBinario {
                     break;
                 case 5:
                     escribir(raiz);
-
                     break;
             }
         } while (opc < 6);
@@ -45,8 +44,7 @@ public class ArbolBinario {
             String texto;
             String[] partes;
             int contador = 0;
-            FileReader archivo = new FileReader("Productos.txt");
-            BufferedReader contenedor = new BufferedReader(archivo);
+            BufferedReader contenedor = new BufferedReader(new FileReader("Productos.txt"));
             while ((texto = contenedor.readLine()) != null) {
                 partes = texto.split("-", 4);
                 id = Integer.parseInt(partes[0]);

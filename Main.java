@@ -9,7 +9,6 @@ public class Main {
         Nodo<Producto> raiz = new Nodo<Producto>();
         raiz = crearArbol(raiz);
         menu(raiz, recorrido);
-
     }
 
     public static void menu(Nodo<Producto> raiz, Recorridos recorrido) {
@@ -98,43 +97,6 @@ public class Main {
         return raiz;
     }
 
-    private static void agregarProducto(Nodo<Producto> raiz) {
-        int id, cantidad;
-        boolean validador = false;
-        String nombre;
-        Double precio;
-        do {
-            System.out.println("Ingrese el id: ");
-            id = entrada.nextInt();
-            validador = validar(id);
-            if (validador == true) {
-                System.out.println("Ingrese el nombre: ");
-                entrada.nextLine();
-                nombre = entrada.nextLine();
-                System.out.println("Ingrese el precio: ");
-                precio = entrada.nextDouble();
-                System.out.println("Ingrese la cantidad: ");
-                cantidad = entrada.nextInt();
-                Producto producto = new Producto(id, cantidad, nombre, precio);
-                Nodo<Producto> validar = buscarNodo(raiz, producto, 1);
-                if (validar == null) {
-                    insertarNodo(raiz, producto);
-                    System.out.println("El producto ha sido añadido");
-                }
-            }
-        } while (validador == false);
-
-    }
-
-    private static boolean validar(int id) {
-        boolean validador = true;
-        if (id < 999 || id > 9999) {
-            System.out.println("El codigo debe ser de 4 digitos\n");
-            validador = false;
-        }
-        return validador;
-    }
-
     private static Nodo<Producto> eliminar(Nodo<Producto> raiz, Producto eliminado) {
         boolean bandera;
         Nodo<Producto> anotherNodo = new Nodo<Producto>();
@@ -178,6 +140,43 @@ public class Main {
             System.out.println("El producto no fue encontrado");
         }
         return raiz;
+    }
+
+    private static void agregarProducto(Nodo<Producto> raiz) {
+        int id, cantidad;
+        boolean validador = false;
+        String nombre;
+        Double precio;
+        do {
+            System.out.println("Ingrese el id: ");
+            id = entrada.nextInt();
+            validador = validar(id);
+            if (validador == true) {
+                System.out.println("Ingrese el nombre: ");
+                entrada.nextLine();
+                nombre = entrada.nextLine();
+                System.out.println("Ingrese el precio: ");
+                precio = entrada.nextDouble();
+                System.out.println("Ingrese la cantidad: ");
+                cantidad = entrada.nextInt();
+                Producto producto = new Producto(id, cantidad, nombre, precio);
+                Nodo<Producto> validar = buscarNodo(raiz, producto, 1);
+                if (validar == null) {
+                    insertarNodo(raiz, producto);
+                    System.out.println("El producto ha sido añadido");
+                }
+            }
+        } while (validador == false);
+
+    }
+
+    private static boolean validar(int id) {
+        boolean validador = true;
+        if (id < 999 || id > 9999) {
+            System.out.println("El codigo debe ser de 4 digitos\n");
+            validador = false;
+        }
+        return validador;
     }
 
     public static void insertarNodo(Nodo<Producto> nodoPadre, Producto producto) {

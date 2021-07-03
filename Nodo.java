@@ -1,5 +1,3 @@
-import javax.sound.midi.MidiDevice.Info;
-
 public class Nodo<Producto> {
     private Producto info;
     private Nodo<Producto> izq;

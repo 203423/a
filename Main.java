@@ -8,6 +8,11 @@ public class Main {
         Recorridos recorrido = new Recorridos();
         Nodo<Producto> raiz = new Nodo<Producto>();
         raiz = crearArbol(raiz);
+        menu(raiz, recorrido);
+
+    }
+
+    public static void menu(Nodo<Producto> raiz, Recorridos recorrido) {
         int opc, valor;
         do {
             System.out.println("1. Vender\n2. Agregar Producto\n3. Eliminar\n4. Mostrar Productos\n5. Guardar y Salir");
@@ -36,6 +41,7 @@ public class Main {
                     break;
             }
         } while (opc != 5);
+
     }
 
     public static Nodo<Producto> crearArbol(Nodo<Producto> nodoPadre) {
@@ -126,9 +132,9 @@ public class Main {
 
     private static boolean validar(int id) {
         boolean validador = false;
-        if (id < 999 || id >9999) {
+        if (id < 999 || id > 9999) {
             System.out.println("El codigo debe ser de 4 digitos\n");
-        } else if (id > 999 && id >=9999) {
+        } else if (id > 999 && id >= 9999) {
             validador = true;
         }
         return validador;

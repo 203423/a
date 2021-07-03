@@ -15,23 +15,21 @@ public class Main {
     public static void menu(Nodo<Producto> raiz, Recorridos recorrido) {
         int opc, valor;
         do {
-            System.out.println("1. Vender\n2. Agregar Producto\n3. Eliminar\n4. Mostrar Productos\n5. Guardar y Salir");
+            System.out.println("1. Vender\n2. Eliminar\n3. Agregar Producto\n4. Mostrar Productos\n5. Guardar y Salir");
             opc = entrada.nextInt();
             switch (opc) {
                 case 1:
                     raiz = vender(raiz);
-
                     break;
                 case 2:
-                    agregarProducto(raiz);
-                    break;
-                case 3:
                     System.out.println("introduzca el id del producto a eliminar");
                     valor = entrada.nextInt();
                     Producto eliminado = new Producto(valor, 1, "", 0.0);
                     raiz = eliminar(raiz, eliminado);
                     break;
-
+                case 3:
+                    agregarProducto(raiz);
+                    break;
                 case 4:
                     System.out.println("Recorrido inOrden\n");
                     recorrido.inOrden(raiz);
@@ -45,14 +43,12 @@ public class Main {
     }
 
     public static Nodo<Producto> crearArbol(Nodo<Producto> nodoPadre) {
-        int id;
-        int cantidad;
+        int id, cantidad, contador = 0;
         Double precio;
         String nombre;
         try {
             String texto;
             String[] partes;
-            int contador = 0;
             BufferedReader contenedor = new BufferedReader(new FileReader("Productos.txt"));
             while ((texto = contenedor.readLine()) != null) {
                 partes = texto.split("-", 4);

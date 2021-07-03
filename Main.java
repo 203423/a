@@ -120,7 +120,7 @@ public class Main {
                     System.out.println("El producto ha sido añadido");
                 }
             }
-        } while (validador != true);
+        } while (validador == false);
 
     }
 
@@ -128,7 +128,6 @@ public class Main {
         boolean validador = false;
         if (id < 999) {
             System.out.println("El codigo debe ser de 4 digitos\n");
-            validador = false;
         } else if (id > 999) {
             validador = true;
         }

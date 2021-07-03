@@ -82,9 +82,10 @@ public class Main {
         Producto producto = new Producto(id, cantidad, "", 0.0);
         Nodo<Producto> validar = buscarNodo(raiz, producto, 2);
         if (validar != null) {
-            if ((producto.getCantidad() <= validar.getInfo().getCantidad()) && (producto.getCantidad() > 0)) {
+            if ((producto.getCantidad() <= validar.getInfo().getCantidad() && (producto.getCantidad() > 0))) {
                 validar.getInfo().setCantidad(validar.getInfo().getCantidad() - producto.getCantidad());
-                if (validar.getInfo().getCantidad() == 0) {
+                System.out.println("Cantidad de producto actualizada");
+                if ((validar.getInfo().getCantidad() == 0)) {
                     System.out.println("Producto eliminado por falta de existencias");
                     raiz = eliminar(raiz, validar.getInfo());
                 } else {
@@ -93,7 +94,7 @@ public class Main {
             } else {
                 System.out.println("La cantidad del producto es insuficiente");
             }
-            System.out.println("Accion exitosa");
+            System.out.println("Venta realizada");
         }
         return raiz;
     }

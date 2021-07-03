@@ -31,7 +31,6 @@ public class Main {
                     agregarProducto(raiz);
                     break;
                 case 4:
-                    System.out.println("Recorrido inOrden\n");
                     recorrido.inOrden(raiz);
                     break;
                 case 5:
@@ -107,7 +106,7 @@ public class Main {
         do {
             System.out.println("Ingrese el id: ");
             id = entrada.nextInt();
-            validar(id);
+            validador = validar(id);
             if (validador == true) {
                 System.out.println("Ingrese el nombre: ");
                 entrada.nextLine();
@@ -128,11 +127,10 @@ public class Main {
     }
 
     private static boolean validar(int id) {
-        boolean validador = false;
+        boolean validador = true;
         if (id < 999 || id > 9999) {
             System.out.println("El codigo debe ser de 4 digitos\n");
-        } else if (id > 999 && id >= 9999) {
-            validador = true;
+            validador = false;
         }
         return validador;
     }

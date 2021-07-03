@@ -126,9 +126,9 @@ public class Main {
 
     private static boolean validar(int id) {
         boolean validador = false;
-        if (id < 999) {
+        if (id < 999 || id >9999) {
             System.out.println("El codigo debe ser de 4 digitos\n");
-        } else if (id > 999) {
+        } else if (id > 999 && id >=9999) {
             validador = true;
         }
         return validador;
